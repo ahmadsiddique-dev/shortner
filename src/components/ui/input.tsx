@@ -1,4 +1,5 @@
 import * as React from "react"
+import '@/app/custom.css'
 
 import { cn } from "@/lib/utils"
 

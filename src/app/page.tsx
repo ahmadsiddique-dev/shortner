@@ -1,14 +1,36 @@
-import React from "react";
+"use client";
+
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import handleForm from "./actions/link.action";
+import { useActionState, useEffect, useState } from "react";
+import ResponseDialog from "@/components/elements/ResponseDialog";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const page = () => {
+  const [state, action, pending] = useActionState(handleForm, null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    
+  }, [])
+
+  useEffect(() => {
+    if (state && !pending && state.success) {
+      setIsOpen(true);
+    }
+    else if (state && !pending && !state.success) {
+      toast.error(state.message || "Something went wrong!")
+    }
+  }, [state, pending]);
+
   return (
     <main>
       <h1 className="text-center my-7 md:my-16 text-6xl text-transparent animate-gradient bg-linear-to-r from-amber-500 via-amber-700 to-black bg-clip-text font-extrabold tracking-tight text-shadow-lg">
@@ -20,23 +42,38 @@ const page = () => {
             <CardHeader>
               <h2 className="text-center font-bold text-xl">Shorten UR URL</h2>
             </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <div>
-                <label htmlFor="providedurl">Url to shorten</label>
-                <Input type="text" name="providedurl" />
-              </div>
+            <CardContent>
+              <form className="flex flex-col gap-4" action={action}>
+                <div>
+                  <label htmlFor="providedurl">Url to shorten</label>
+                  <Input type="text" name="providedurl" />
+                </div>
 
-              <div>
-                <label htmlFor="providedurl">Prefered Url</label>
-                <Input type="text" name="providedurl" />
-              </div>
+                <div>
+                  <label htmlFor="slug">Prefered Slug</label>
+                  <Input type="text" name="slug" />
+                </div>
 
-              <Button type="submit">Submit</Button>
+                <Button disabled={pending} type="submit">
+                  {pending ? (
+                    <>
+                      <Loader2 className="animate-spin" /> loading
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
+                </Button>
+              </form>
             </CardContent>
             <CardFooter>
               <p className="opacity-50">Enjoye!</p>
             </CardFooter>
           </Card>
+          <ResponseDialog
+            link={state?.url || "https://ahmadsiddique.dev"}
+            open={isOpen}
+            setIsOpen={setIsOpen}
+          />
         </div>
       </section>
     </main>
