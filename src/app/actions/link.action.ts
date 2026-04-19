@@ -23,7 +23,7 @@ const handleForm = async (
       return { message: "URL and Slug are required!", success: false };
     }
 
-    const response = await UrlModel.findOne({ slug });
+    const response = await UrlModel.findOne({ shortened: slug });
 
     if (response) {
       return {
@@ -34,8 +34,8 @@ const handleForm = async (
 
     const created = UrlModel.create({
       to_shortened: url,
-      shortened: slug
-    })
+      shortened: slug,
+    });
 
     return {
       message: "Shortened!",
@@ -44,7 +44,7 @@ const handleForm = async (
     };
   } catch (error) {
     return {
-      message: error instanceof Error? error.message: "Internal server error",
+      message: error instanceof Error ? error.message : "Internal server error",
       success: false,
     };
   }
