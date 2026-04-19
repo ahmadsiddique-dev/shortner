@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import handleForm from "./actions/link.action";
-import { useActionState, useEffect, useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import ResponseDialog from "@/components/elements/ResponseDialog";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -17,11 +17,13 @@ import useApi from "@/lib/apiClient";
 import axios from "axios";
 import { useDebounceValue } from "usehooks-ts";
 import { Spinner } from "@/components/ui/spinner";
+import validator from 'validator'
 
 const page = () => {
   const [state, action, pending] = useActionState(handleForm, null);
   const [isOpen, setIsOpen] = useState(false);
   const [debouncedValue, setValue] = useDebounceValue("", 500);
+  const [isEnable, setIsEnable] = useState(false);
 
   useEffect(() => {
     if (!debouncedValue) return;
@@ -29,6 +31,11 @@ const page = () => {
   }, [debouncedValue]);
 
   useEffect(() => {
+
+    if (state) {
+      console.log("State: ", state);
+    }
+
     if (state && !pending && state.success) {
       setIsOpen(true);
     } else if (state && !pending && !state.success) {
@@ -39,15 +46,27 @@ const page = () => {
   const {
     loading: LoadingUnique,
     data: dataUnique,
-    error: errorUnique,
     execute: executeUnique,
   } = useApi((slug: string | undefined) =>
     axios.post(`/api/check-unique`, { slug }),
   );
 
   useEffect(() => {
-    console.log('dataUnique :>> ', dataUnique?.data);
-  }, [dataUnique])
+    console.log("dataUnique :>> ", dataUnique?.data);
+  }, [dataUnique]);
+
+  const checkInputSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+
+    const isValid = validator.isURL(process.env.NEXT_PUBLIC_HOSTNAME + e.target.value, {
+      protocols: ['https'],
+    });
+    if (isValid) {
+      setIsEnable(true);
+    } else {
+      setIsEnable(false);
+    }
+  };
 
   return (
     <main>
@@ -87,14 +106,15 @@ const page = () => {
                   <label htmlFor="slug">Prefered Slug</label>
                   <Input
                     onChange={(e) => {
-                      setValue(e.target.value);
+                      checkInputSlug(e);
                     }}
                     type="text"
                     name="slug"
                   />
+                  <p className="text-red-500">{(!isEnable && debouncedValue.length > 2) && "Invalid Slug"}</p>
                 </div>
 
-                <Button disabled={pending} type="submit">
+                <Button disabled={LoadingUnique || pending || isEnable? false: true} type="submit">
                   {pending ? (
                     <>
                       <Loader2 className="animate-spin" /> loading
@@ -110,7 +130,7 @@ const page = () => {
             </CardFooter>
           </Card>
           <ResponseDialog
-            link={state?.url || "https://ahmadsiddique.dev"}
+            link={ state?.url || "https://ahmadsiddique.dev"}
             open={isOpen}
             setIsOpen={setIsOpen}
           />

@@ -3,14 +3,23 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { ExternalLink } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import CopyLink from "./CopyLink";
 
-const ResponseDialog = ({open, setIsOpen, link}: {open: boolean; setIsOpen: any, link: string}) => {
+const ResponseDialog = ({
+  open,
+  setIsOpen,
+  link,
+}: {
+  open: boolean;
+  setIsOpen: any;
+  link: string;
+}) => {
+  console.log("Link: ", link);
   return (
     <Dialog open={open} onOpenChange={setIsOpen}>
       <DialogContent>
@@ -20,17 +29,26 @@ const ResponseDialog = ({open, setIsOpen, link}: {open: boolean; setIsOpen: any,
             <Input
               readOnly
               className="pr-7.5 text-blue-500 mask-r-from-65% underline pointer-events-none! select-none!"
-              value={
-                link
-              }
+              value={link}
               type="text"
             />
-             <CopyLink link={link}/>
+            <CopyLink link={link} />
           </div>
-          <Button variant={"link"} className="max-w-30 my-3.5">
-            Go to <ExternalLink />
-          </Button>
-          <DialogDescription>Payment: Just a ⭐ on <a target="_blank" href="https://github.com/ahmadsiddique-dev/shortner">GitHub</a>.</DialogDescription>
+          <a href={link}>
+            <Button variant={"link"} className="max-w-30 my-3.5">
+              Go to <ExternalLink />
+            </Button>
+          </a>
+          <DialogDescription>
+            Payment: Just a ⭐ on{" "}
+            <a
+              target="_blank"
+              href="https://github.com/ahmadsiddique-dev/shortner"
+            >
+              GitHub
+            </a>
+            .
+          </DialogDescription>
         </DialogHeader>
       </DialogContent>
     </Dialog>

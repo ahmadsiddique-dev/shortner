@@ -1,7 +1,6 @@
 "use server";
 import dbConnect from "@/connection/db_connection";
 import UrlModel from "@/model/url.model";
-import mongoose from "mongoose";
 
 export interface IhandleForm {
   message: string;
@@ -22,7 +21,6 @@ const handleForm = async (
     if (!url || !slug) {
       return { message: "URL and Slug are required!", success: false };
     }
-
     const response = await UrlModel.findOne({ shortened: slug });
 
     if (response) {
@@ -32,7 +30,7 @@ const handleForm = async (
       };
     }
 
-    const created = UrlModel.create({
+    const created = await UrlModel.create({
       to_shortened: url,
       shortened: slug,
     });
@@ -40,7 +38,7 @@ const handleForm = async (
     return {
       message: "Shortened!",
       success: true,
-      url: "www.funfamily.ahmadsiddique.dev/linkedin",
+      url: process.env.NEXT_PUBLIC_HOSTNAME + created.shortened,
     };
   } catch (error) {
     return {

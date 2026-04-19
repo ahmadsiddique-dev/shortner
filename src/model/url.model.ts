@@ -12,11 +12,11 @@ const UrlSchema = new Schema<IUrl>({
         required: true,
         trim: true,
         min: 3,
-        unique: true
     },
     shortened: {
         type: String,
         required: true,
+        unique: true
     }
 }, {timestamps: {createdAt: true}})
 
