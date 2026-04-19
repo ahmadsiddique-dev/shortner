@@ -17,7 +17,7 @@ import useApi from "@/lib/apiClient";
 import axios from "axios";
 import { useDebounceValue } from "usehooks-ts";
 import { Spinner } from "@/components/ui/spinner";
-import validator from 'validator'
+import validator from "validator";
 
 const page = () => {
   const [state, action, pending] = useActionState(handleForm, null);
@@ -31,11 +31,6 @@ const page = () => {
   }, [debouncedValue]);
 
   useEffect(() => {
-
-    if (state) {
-      console.log("State: ", state);
-    }
-
     if (state && !pending && state.success) {
       setIsOpen(true);
     } else if (state && !pending && !state.success) {
@@ -51,16 +46,16 @@ const page = () => {
     axios.post(`/api/check-unique`, { slug }),
   );
 
-  useEffect(() => {
-    console.log("dataUnique :>> ", dataUnique?.data);
-  }, [dataUnique]);
-
   const checkInputSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
 
-    const isValid = validator.isURL(process.env.NEXT_PUBLIC_HOSTNAME + e.target.value, {
-      protocols: ['https'],
-    });
+    const isValid = validator.isURL(
+      process.env.NEXT_PUBLIC_HOSTNAME + e.target.value,
+      {
+        protocols: [process.env.NODE_ENV === "production" ? "https" : "http"],
+        require_tld: false,
+      },
+    );
     if (isValid) {
       setIsEnable(true);
     } else {
@@ -111,10 +106,20 @@ const page = () => {
                     type="text"
                     name="slug"
                   />
-                  <p className="text-red-500">{(!isEnable && debouncedValue.length > 2) && "Invalid Slug"}</p>
+                  <p className="text-red-500">
+                    {!isEnable && debouncedValue.length > 2 && "Invalid Slug"}
+                  </p>
                 </div>
 
-                <Button disabled={LoadingUnique || pending || isEnable? false: true} type="submit">
+                <Button
+                  disabled={
+                    LoadingUnique ||
+                    pending ||
+                    !isEnable ||
+                    !dataUnique?.data?.success
+                  }
+                  type="submit"
+                >
                   {pending ? (
                     <>
                       <Loader2 className="animate-spin" /> loading
@@ -130,7 +135,7 @@ const page = () => {
             </CardFooter>
           </Card>
           <ResponseDialog
-            link={ state?.url || "https://ahmadsiddique.dev"}
+            link={state?.url || "https://ahmadsiddique.dev"}
             open={isOpen}
             setIsOpen={setIsOpen}
           />

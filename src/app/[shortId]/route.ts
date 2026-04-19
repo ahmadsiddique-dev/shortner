@@ -10,7 +10,6 @@ export async function GET(
     await dbConnect();
     const {shortId} = await params
     const urlDoc = await UrlModel.findOne({ shortened: shortId });
-    console.log('urlDoc :>> ', urlDoc);
     if (!urlDoc) {
       return NextResponse.redirect("https://ahmadsiddique.dev/not-found");
     }
