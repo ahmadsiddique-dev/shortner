@@ -32,7 +32,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-mono", jetbrainsMono.variable)}
     >
       
-        <body className="min-h-full dark flex flex-col"><Toaster />{children}</body>
+        <body className="min-h-full dark flex flex-col"><Toaster richColors position="top-right"/>{children}</body>
     </html>
   );
 }

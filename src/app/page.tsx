@@ -45,6 +45,10 @@ const page = () => {
     axios.post(`/api/check-unique`, { slug }),
   );
 
+  useEffect(() => {
+    console.log('dataUnique :>> ', dataUnique?.data);
+  }, [dataUnique])
+
   return (
     <main>
       <h1 className="text-center my-7 md:my-16 text-6xl text-transparent animate-gradient bg-linear-to-r from-amber-500 via-amber-700 to-black bg-clip-text font-extrabold tracking-tight text-shadow-lg">
@@ -72,7 +76,7 @@ const page = () => {
                             <Spinner />
                             <p className="text-muted-foreground">Loading</p>
                           </span>
-                        ) : !dataUnique?.data ? (
+                        ) : !dataUnique?.data?.success ? (
                           <span className="text-red-500">Occupied</span>
                         ) : (
                           <span className="text-green-500">Available</span>

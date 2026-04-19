@@ -20,7 +20,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     if (response) {
       return NextResponse.json(
         { success: false, message: "Slug is already taken" },
-        { status: 400 },
+        { status: 200 },
       );
     }
 
