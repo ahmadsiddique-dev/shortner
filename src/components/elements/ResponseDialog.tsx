@@ -19,7 +19,6 @@ const ResponseDialog = ({
   setIsOpen: any;
   link: string;
 }) => {
-  console.log("Link: ", link);
   return (
     <Dialog open={open} onOpenChange={setIsOpen}>
       <DialogContent>

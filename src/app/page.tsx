@@ -49,13 +49,12 @@ const page = () => {
   const checkInputSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
 
-    const isValid = validator.isURL(
-      process.env.NEXT_PUBLIC_HOSTNAME + e.target.value,
-      {
-        protocols: [process.env.NODE_ENV === "production" ? "https" : "http"],
-        require_tld: false,
-      },
-    );
+    const slug = process.env.NEXT_PUBLIC_HOSTNAME + e.target.value;
+    const isValid = validator.isURL(slug, {
+      protocols: ["http", "https"],
+      require_tld: process.env.NODE_ENV === "production",
+    });
+    console.log("isValid: ", isValid, slug);
     if (isValid) {
       setIsEnable(true);
     } else {
